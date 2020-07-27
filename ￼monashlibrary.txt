@@ -1,0 +1,765 @@
+SQL> 
+SQL> -------------------------------------------
+SQL> ----------------- Q1 ----------------------
+SQL> -------------------------------------------
+SQL> -- CREATE TABLE commands
+SQL> 
+SQL> 
+SQL> -------------------------------------------
+SQL> --1.1
+SQL> ------------------------a-------------------
+SQL> /*
+SQL>Create the missing table(s)
+SQL>*/
+SQL> 
+SQL> CREATE TABLE book_copy (
+  2      branch_code         NUMBER(2) NOT NULL,
+  3      bc_id               NUMBER(6) NOT NULL,
+  4      bc_purchase_price   NUMBER(7,2) NOT NULL,
+  5      bc_reserve_flag     CHAR(1) NOT NULL,
+  6      book_call_no        VARCHAR2(20) NOT NULL
+  7  );
+
+Error starting at line : 17 in command -
+CREATE TABLE book_copy (
+    branch_code         NUMBER(2) NOT NULL,
+    bc_id               NUMBER(6) NOT NULL,
+    bc_purchase_price   NUMBER(7,2) NOT NULL,
+    bc_reserve_flag     CHAR(1) NOT NULL,
+    book_call_no        VARCHAR2(20) NOT NULL
+)
+Error report -
+ORA-00955: name is already used by an existing object
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+SQL> 
+SQL> COMMENT ON COLUMN book_copy.branch_code IS
+  2      'Branch number ';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN book_copy.bc_id IS
+  2      'Book copy id within the branch which owns this book copy';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN book_copy.bc_purchase_price IS
+  2      'Purchase price for this copy';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN book_copy.bc_reserve_flag IS
+  2      'Flag to indicate if on Counter Reserve or not (Y/N)';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN book_copy.book_call_no IS
+  2      'Titles call number - identifies a title';
+
+Comment created.
+
+SQL> 
+SQL> ALTER TABLE book_copy
+  2      ADD CONSTRAINT bc_counter_chk CHECK ( bc_reserve_flag IN (
+  3          'N',
+  4          'Y'
+  5      ) );
+
+Error starting at line : 40 in command -
+ALTER TABLE book_copy
+    ADD CONSTRAINT bc_counter_chk CHECK ( bc_reserve_flag IN (
+        'N',
+        'Y'
+    ) )
+Error report -
+ORA-02264: name already used by an existing constraint
+02264. 00000 -  "name already used by an existing constraint"
+*Cause:    The specified constraint name has to be unique.
+*Action:   Specify a unique constraint name for the constraint.
+SQL> 
+SQL> ALTER TABLE book_copy ADD CONSTRAINT book_copy_pk PRIMARY KEY ( bc_id,
+  2  branch_code );
+
+Error starting at line : 46 in command -
+ALTER TABLE book_copy ADD CONSTRAINT book_copy_pk PRIMARY KEY ( bc_id,
+branch_code )
+Error report -
+ORA-02260: table can have only one primary key
+02260. 00000 -  "table can have only one primary key"
+*Cause:    Self-evident.
+*Action:   Remove the extra primary key.
+SQL> 
+SQL> 
+SQL> CREATE TABLE loan (
+  2      branch_code               NUMBER(2) NOT NULL,
+  3      bc_id                     NUMBER(6) NOT NULL,
+  4      loan_date_time            DATE NOT NULL,
+  5      loan_due_date             DATE NOT NULL,
+  6      loan_actual_return_date   DATE,
+  7      bor_no                    NUMBER(6) NOT NULL
+  8  );
+
+Error starting at line : 50 in command -
+CREATE TABLE loan (
+    branch_code               NUMBER(2) NOT NULL,
+    bc_id                     NUMBER(6) NOT NULL,
+    loan_date_time            DATE NOT NULL,
+    loan_due_date             DATE NOT NULL,
+    loan_actual_return_date   DATE,
+    bor_no                    NUMBER(6) NOT NULL
+)
+Error report -
+ORA-00955: name is already used by an existing object
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+SQL> 
+SQL> COMMENT ON COLUMN loan.branch_code IS
+  2      'Branch number ';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN loan.bc_id IS
+  2      'Book copy id within the branch which owns this book copy';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN loan.loan_date_time IS
+  2      'Date and time loan taken out';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN loan.loan_due_date IS
+  2      'Date and time loan due';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN loan.loan_actual_return_date IS
+  2      'Actual date and time loan retruned';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN loan.bor_no IS
+  2      'Borrower identifier';
+
+Comment created.
+
+SQL> 
+SQL> ALTER TABLE loan
+  2      ADD CONSTRAINT loan_pk PRIMARY KEY ( branch_code,
+  3      bc_id,
+  4      loan_date_time );
+
+Error starting at line : 77 in command -
+ALTER TABLE loan
+    ADD CONSTRAINT loan_pk PRIMARY KEY ( branch_code,
+    bc_id,
+    loan_date_time )
+Error report -
+ORA-02260: table can have only one primary key
+02260. 00000 -  "table can have only one primary key"
+*Cause:    Self-evident.
+*Action:   Remove the extra primary key.
+SQL> 
+SQL> 
+SQL> CREATE TABLE reserve (
+  2      branch_code                NUMBER(2) NOT NULL,
+  3      bc_id                      NUMBER(6) NOT NULL,
+  4      reserve_date_time_placed   DATE NOT NULL,
+  5      bor_no                     NUMBER(6) NOT NULL
+  6  );
+
+Error starting at line : 83 in command -
+CREATE TABLE reserve (
+    branch_code                NUMBER(2) NOT NULL,
+    bc_id                      NUMBER(6) NOT NULL,
+    reserve_date_time_placed   DATE NOT NULL,
+    bor_no                     NUMBER(6) NOT NULL
+)
+Error report -
+ORA-00955: name is already used by an existing object
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+SQL> 
+SQL> COMMENT ON COLUMN reserve.branch_code IS
+  2      'Branch number ';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN reserve.bc_id IS
+  2      'Book copy id within the branch which owns this book copy';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN reserve.reserve_date_time_placed IS
+  2      'Date and time reserve was palced';
+
+Comment created.
+
+SQL> 
+SQL> COMMENT ON COLUMN reserve.bor_no IS
+  2      'Borrower identifier';
+
+Comment created.
+
+SQL> 
+SQL> ALTER TABLE reserve
+  2      ADD CONSTRAINT reserve_pk PRIMARY KEY ( reserve_date_time_placed,
+  3      branch_code,
+  4      bc_id );
+
+Error starting at line : 102 in command -
+ALTER TABLE reserve
+    ADD CONSTRAINT reserve_pk PRIMARY KEY ( reserve_date_time_placed,
+    branch_code,
+    bc_id )
+Error report -
+ORA-02260: table can have only one primary key
+02260. 00000 -  "table can have only one primary key"
+*Cause:    Self-evident.
+*Action:   Remove the extra primary key.
+SQL> 
+SQL> 
+SQL> -- ALTER TABLE FK Rules
+SQL> 
+SQL> ALTER TABLE loan
+  2      ADD CONSTRAINT bc_loan FOREIGN KEY ( bc_id,
+  3      branch_code )
+  4          REFERENCES book_copy ( bc_id,
+  5          branch_code );
+
+Error starting at line : 110 in command -
+ALTER TABLE loan
+    ADD CONSTRAINT bc_loan FOREIGN KEY ( bc_id,
+    branch_code )
+        REFERENCES book_copy ( bc_id,
+        branch_code )
+Error report -
+ORA-02275: such a referential constraint already exists in the table
+02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+SQL> 
+SQL> ALTER TABLE reserve
+  2      ADD CONSTRAINT bc_reserve FOREIGN KEY ( bc_id,
+  3      branch_code )
+  4          REFERENCES book_copy ( bc_id,
+  5          branch_code );
+
+Error starting at line : 116 in command -
+ALTER TABLE reserve
+    ADD CONSTRAINT bc_reserve FOREIGN KEY ( bc_id,
+    branch_code )
+        REFERENCES book_copy ( bc_id,
+        branch_code )
+Error report -
+ORA-02275: such a referential constraint already exists in the table
+02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+SQL> 
+SQL> ALTER TABLE book_copy
+  2      ADD CONSTRAINT bd_bc FOREIGN KEY ( book_call_no )
+  3          REFERENCES book_detail ( book_call_no );
+
+Error starting at line : 122 in command -
+ALTER TABLE book_copy
+    ADD CONSTRAINT bd_bc FOREIGN KEY ( book_call_no )
+        REFERENCES book_detail ( book_call_no )
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> ALTER TABLE loan
+  2      ADD CONSTRAINT borr_loan FOREIGN KEY ( bor_no )
+  3          REFERENCES borrower ( bor_no );
+
+Error starting at line : 126 in command -
+ALTER TABLE loan
+    ADD CONSTRAINT borr_loan FOREIGN KEY ( bor_no )
+        REFERENCES borrower ( bor_no )
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> ALTER TABLE reserve
+  2      ADD CONSTRAINT borr_reserve FOREIGN KEY ( bor_no )
+  3          REFERENCES borrower ( bor_no );
+
+Error starting at line : 130 in command -
+ALTER TABLE reserve
+    ADD CONSTRAINT borr_reserve FOREIGN KEY ( bor_no )
+        REFERENCES borrower ( bor_no )
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> ALTER TABLE book_copy
+  2      ADD CONSTRAINT branch_bookcopy FOREIGN KEY ( branch_code )
+  3          REFERENCES branch ( branch_code );
+
+Error starting at line : 134 in command -
+ALTER TABLE book_copy
+    ADD CONSTRAINT branch_bookcopy FOREIGN KEY ( branch_code )
+        REFERENCES branch ( branch_code )
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> 
+SQL> -------------------------------------------
+SQL> --1.2
+SQL> -------------------------------------------
+SQL> /*
+SQL>Add the full set of DROP TABLE statements without using CASCADE CONSTRAINTS option.  
+SQL>
+SQL>
+SQL>DROP TABLE loan PURGE;
+SQL>
+SQL>DROP TABLE reserve PURGE;
+SQL>
+SQL>DROP TABLE book_copy PURGE;
+SQL>
+SQL>DROP TABLE borrower PURGE;
+SQL>
+SQL>DROP TABLE bd_author PURGE;
+SQL>
+SQL>DROP TABLE bd_subject PURGE;
+SQL>
+SQL>DROP TABLE subject PURGE;
+SQL>
+SQL>DROP TABLE author PURGE;
+SQL>
+SQL>DROP TABLE book_detail PURGE;
+SQL>
+SQL>DROP TABLE publisher PURGE;
+SQL>
+SQL>--DROP TABLE branch_manager PURGE;
+SQL>
+SQL>DROP TABLE branch PURGE;
+SQL>
+SQL>DROP TABLE manager PURGE;
+SQL>
+SQL>*/
+SQL> 
+SQL> 
+SQL> -------------------------------------------
+SQL> ----------------- Q2 ----------------------
+SQL> -------------------------------------------
+SQL> 
+SQL> 
+SQL> -------------------------------------------
+SQL> --2.1
+SQL> -------------------------------------------
+SQL> /*
+SQL>MonLib has just purchased its first 3 copies of a recently released edition of a book. Readers of this book will learn about the subjects 
+SQL>"Database Design and Database Management". 
+SQL>
+SQL>Some of  the details of the new book are:
+SQL>
+SQL>	      	Call Number: 005.74 C822D 2018
+SQL>            Title: Database Systems: Design, Implementation, and Management
+SQL>	      	Publication Year: 2018
+SQL>	      	Edition: 13
+SQL>	      	Publisher: Cengage
+SQL>            Authors: Carlos CORONEL (author_id = 1 ) and 
+SQL>                    Steven MORRIS  (author_id = 2)  	      	
+SQL>            Price: $120
+SQL>	
+SQL>You may make up any other reasonable data values you need to be able to add this book.
+SQL>
+SQL>Each of the 3 MonLib branches listed below will get a single copy of this book, the book will be available for borrowing (ie not on counter reserve)
+SQL>at each branch:
+SQL>
+SQL>		Caulfield (Ph: 8888888881)
+SQL>		Glen Huntly (Ph: 8888888882)
+SQL>        Carnegie (Ph: 8888888883)
+SQL>
+SQL>Your are required to treat this add of the book details and the three copies as a single transaction.
+SQL>
+SQL>*/
+SQL> 
+SQL> INSERT INTO book_detail VALUES (
+  2      '005.74 C822D 2018',
+  3      'Database Systems: Design, Implementation, and Management',
+  4      'R',
+  5      802,
+  6      TO_DATE('2018','YYYY'),
+  7      '13',
+  8      (
+  9          SELECT
+ 10              pub_id
+ 11          FROM
+ 12              publisher
+ 13          WHERE
+ 14              pub_name = 'Cengage'
+ 15      )
+ 16  );
+
+Error starting at line : 211 in command -
+INSERT INTO book_detail VALUES (
+    '005.74 C822D 2018',
+    'Database Systems: Design, Implementation, and Management',
+    'R',
+    802,
+    TO_DATE('2018','YYYY'),
+    '13',
+    (
+        SELECT
+            pub_id
+        FROM
+            publisher
+        WHERE
+            pub_name = 'Cengage'
+    )
+)
+Error at Command Line : 211 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> INSERT INTO bd_subject VALUES (
+  2      (
+  3          SELECT
+  4              subject_code
+  5          FROM
+  6              subject
+  7          WHERE
+  8              subject_details = 'Database Design'
+  9      ),
+ 10      '005.74 C822D 2018'
+ 11  );
+
+Error starting at line : 228 in command -
+INSERT INTO bd_subject VALUES (
+    (
+        SELECT
+            subject_code
+        FROM
+            subject
+        WHERE
+            subject_details = 'Database Design'
+    ),
+    '005.74 C822D 2018'
+)
+Error at Command Line : 228 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> INSERT INTO bd_subject VALUES (
+  2      (
+  3          SELECT
+  4              subject_code
+  5          FROM
+  6              subject
+  7          WHERE
+  8              subject_details = 'Database Management'
+  9      ),
+ 10     '005.74 C822D 2018'
+ 11  );
+
+Error starting at line : 240 in command -
+INSERT INTO bd_subject VALUES (
+    (
+        SELECT
+            subject_code
+        FROM
+            subject
+        WHERE
+            subject_details = 'Database Management'
+    ),
+   '005.74 C822D 2018'
+)
+Error at Command Line : 240 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> INSERT INTO bd_author VALUES (
+  2      '005.74 C822D 2018',
+  3      1
+  4  );
+
+Error starting at line : 252 in command -
+INSERT INTO bd_author VALUES (
+    '005.74 C822D 2018',
+    1
+)
+Error at Command Line : 252 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> INSERT INTO bd_author VALUES (
+  2      '005.74 C822D 2018',
+  3      2
+  4  );
+
+Error starting at line : 257 in command -
+INSERT INTO bd_author VALUES (
+    '005.74 C822D 2018',
+    2
+)
+Error at Command Line : 257 Column : 13
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> 
+SQL> INSERT INTO book_copy VALUES (
+  2      (
+  3          SELECT
+  4              branch_code
+  5          FROM
+  6              branch
+  7          WHERE
+  8              branch_contact_no = '8888888881'
+  9      ),
+ 10      (
+ 11          SELECT
+ 12              branch_count_books + 1
+ 13          FROM
+ 14              branch
+ 15          WHERE
+ 16              branch_contact_no = '8888888881'
+ 17      ),
+ 18      120,
+ 19      'N',
+ 20      '005.74 C822D 2018'
+ 21  );
+
+Error starting at line : 263 in command -
+INSERT INTO book_copy VALUES (
+    (
+        SELECT
+            branch_code
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888881'
+    ),
+    (
+        SELECT
+            branch_count_books + 1
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888881'
+    ),
+    120,
+    'N',
+    '005.74 C822D 2018'
+)
+Error at Command Line : 263 Column : 13
+Error report -
+SQL Error: ORA-00947: not enough values
+00947. 00000 -  "not enough values"
+*Cause:    
+*Action:
+SQL> 
+SQL> UPDATE branch
+  2      SET
+  3          branch_count_books = branch_count_books + 1
+  4  	WHERE
+  5      branch_contact_no = '8888888881';
+
+Error starting at line : 285 in command -
+UPDATE branch
+    SET
+        branch_count_books = branch_count_books + 1
+	WHERE
+    branch_contact_no = '8888888881'
+Error at Command Line : 285 Column : 8
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> INSERT INTO book_copy VALUES (
+  2      (
+  3          SELECT
+  4              branch_code
+  5          FROM
+  6              branch
+  7          WHERE
+  8              branch_contact_no = '8888888882'
+  9      ),
+ 10      (
+ 11          SELECT
+ 12              branch_count_books + 1
+ 13          FROM
+ 14              branch
+ 15          WHERE
+ 16              branch_contact_no = '8888888882'
+ 17      ),
+ 18      120,
+ 19      'N',
+ 20      '005.74 C822D 2018'
+ 21  );
+
+Error starting at line : 291 in command -
+INSERT INTO book_copy VALUES (
+    (
+        SELECT
+            branch_code
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888882'
+    ),
+    (
+        SELECT
+            branch_count_books + 1
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888882'
+    ),
+    120,
+    'N',
+    '005.74 C822D 2018'
+)
+Error at Command Line : 291 Column : 13
+Error report -
+SQL Error: ORA-00947: not enough values
+00947. 00000 -  "not enough values"
+*Cause:    
+*Action:
+SQL> 
+SQL> UPDATE branch
+  2      SET
+  3          branch_count_books = branch_count_books + 1
+  4  	WHERE
+  5      branch_contact_no = '8888888882';
+
+Error starting at line : 313 in command -
+UPDATE branch
+    SET
+        branch_count_books = branch_count_books + 1
+	WHERE
+    branch_contact_no = '8888888882'
+Error at Command Line : 313 Column : 8
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> 
+SQL> INSERT INTO book_copy VALUES (
+  2      (
+  3          SELECT
+  4              branch_code
+  5          FROM
+  6              branch
+  7          WHERE
+  8              branch_contact_no = '8888888883'
+  9      ),
+ 10      (
+ 11          SELECT
+ 12              branch_count_books + 1
+ 13          FROM
+ 14              branch
+ 15          WHERE
+ 16              branch_contact_no = '8888888883'
+ 17      ),
+ 18      120,
+ 19      'N',
+ 20      '005.74 C822D 2018'
+ 21  );
+
+Error starting at line : 320 in command -
+INSERT INTO book_copy VALUES (
+    (
+        SELECT
+            branch_code
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888883'
+    ),
+    (
+        SELECT
+            branch_count_books + 1
+        FROM
+            branch
+        WHERE
+            branch_contact_no = '8888888883'
+    ),
+    120,
+    'N',
+    '005.74 C822D 2018'
+)
+Error at Command Line : 320 Column : 13
+Error report -
+SQL Error: ORA-00947: not enough values
+00947. 00000 -  "not enough values"
+*Cause:    
+*Action:
+SQL> 
+SQL> UPDATE branch
+  2      SET
+  3          branch_count_books = branch_count_books + 1
+  4  	WHERE
+  5      branch_contact_no = '8888888883';
+
+Error starting at line : 342 in command -
+UPDATE branch
+    SET
+        branch_count_books = branch_count_books + 1
+	WHERE
+    branch_contact_no = '8888888883'
+Error at Command Line : 342 Column : 8
+Error report -
+SQL Error: ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> /* Check values NOT required as part of submission */
+SQL> 
+SQL> SELECT
+  2      *
+  3  FROM
+  4      book_detail
+  5  ORDER BY
+  6      ROWID;
